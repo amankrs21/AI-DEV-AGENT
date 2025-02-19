@@ -24,7 +24,7 @@ def extract_dependencies(package_json_path):
             print(f"Error decoding JSON in {package_json_path}")
             return {}, {}
 
-def scan_dependencies(directory):
+def scan_dependencies(directory: str) -> dict:
     package_json_files = find_package_json_files(directory)
     dependency_report = {}
 

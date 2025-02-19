@@ -30,7 +30,7 @@ def run_npm_audit(package_json_path):
         print(f"Error decoding JSON output in {package_dir}")
         return None
 
-def scan_security(directory, output_file):
+def scan_security(directory: str) -> dict:
     """Scans security vulnerabilities in all package.json files."""
     security_report = {}
 
@@ -46,9 +46,4 @@ def scan_security(directory, output_file):
             if audit_results:
                 security_report[relative_path] = audit_results
 
-    os.makedirs(os.path.dirname(output_file), exist_ok=True)
-
-    with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(security_report, f, indent=4)
-
-    print(f"Security audit report saved to {output_file}")
+    return security_report

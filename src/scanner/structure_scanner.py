@@ -1,5 +1,4 @@
 import os
-import json
 
 IGNORED_FOLDERS = {".git", ".vscode", "node_modules", "__pycache__", "dist", "build", "venv"}
 
@@ -22,10 +21,3 @@ def scan_directory(directory: str) -> dict:
         }
 
     return project_structure
-
-def save_json_report(structure: dict, output_file: str):
-    """
-    Saves the scanned structure as a JSON file.
-    """
-    with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(structure, f, indent=4)

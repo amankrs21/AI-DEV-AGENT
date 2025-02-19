@@ -3,4 +3,3 @@
 .env/
 scratch.txt
 *__pycache__/
-reports/
