@@ -1,4 +1,4 @@
-# 🤖 AI Agent Junior Developer
+# 🤖 AI Agent Developer
 
 Welcome to the **AI Agent Junior Developer** project! This AI Agent is designed to assist as a Junior Developer by performing various coding tasks. Below are the key features and functionalities of this AI Agent:
 
