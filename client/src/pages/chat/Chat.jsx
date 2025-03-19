@@ -1,69 +1,100 @@
 import axios from "axios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
 import {
     Container, Typography, List, ListItem, ListItemText, Button, Collapse, IconButton,
     TextField, Card, InputAdornment,
 } from "@mui/material";
 import { ExpandMore, ExpandLess, Delete, CloudUpload, Send } from "@mui/icons-material";
+
 import './Chat.css';
+import Message from "./Message";
 
-export default function ChatCopy1() {
 
-    const location = useLocation();
+// Chat component
+export default function Chat() {
+
+    const navigate = useNavigate();
     const fileInputRef = useRef(null);
     const messagesEndRef = useRef(null);
 
+    const [files, setFiles] = useState([]);
     const [inputText, setInputText] = useState("");
     const [isExpanded, setIsExpanded] = useState(false);
-    const [files, setFiles] = useState(location.state?.files || []);
     const [messages, setMessages] = useState([
         { sender: "bot", text: "Hi there! What feature or bug issue would you like to work on today?" }
     ]);
 
     useEffect(() => {
-        if (files.length > 0) {
-            uploadFilesToBackend(files);
+        const isFileUploaded = localStorage.getItem("isFileUploaded");
+        if (!isFileUploaded) {
+            toast.error("Please upload files to analyze.");
+            navigate("/home");
+        } else {
+            fetchUploadedFiles();
         }
-    }, [files]);
-
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
+    }, [navigate]);
 
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
 
-    const uploadFilesToBackend = async (files) => {
-        const formData = new FormData();
-        files.forEach((file) => formData.append("files", file));
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    const fetchUploadedFiles = async () => {
         try {
-            await axios.post("http://localhost:5000/upload-files", formData);
-            console.log("Files uploaded successfully.");
+            const response = await axios.get("http://localhost:5000/uploaded-files");
+            setFiles(response.data);
         } catch (error) {
-            console.error("File upload failed:", error);
+            console.error("Failed to fetch uploaded files:", error);
         }
     };
 
-    const removeFile = (index) => {
-        setFiles(files.filter((_, i) => i !== index));
+    const handleFileUpload = async (event) => {
+        const files = Array.from(event.target.files);
+        const formData = new FormData();
+        files.forEach((file) => formData.append("files", file));
+
+        try {
+            const response = await axios.post("http://localhost:5000/upload-files", formData);
+            toast.success(response?.data?.message || "Files uploaded successfully.");
+            fetchUploadedFiles();
+        } catch (error) {
+            console.error("File upload failed:", error);
+        }
+        return;
     };
 
-    const handleSendMessage = () => {
+    const removeFile = (file) => {
+        try {
+            axios.delete(`http://localhost:5000/remove-file/${file}`);
+            toast.success("File removed successfully.");
+            setFiles(files.filter((f) => f !== file));
+        } catch (error) {
+            console.error("Failed to remove file:", error);
+        }
+    };
+
+
+    const handleSendMessage = async () => {
         if (!inputText.trim()) return;
-        setMessages([...messages, { sender: "user", text: inputText }]);
-        setInputText("");
-        setTimeout(() => {
-            setMessages((prev) => [
-                ...prev,
-                { sender: "bot", text: "Got it! I'll analyze that and get back to you." }
-            ]);
-        }, 1000);
-    };
 
-    const handleFileUpload = (event) => {
-        setFiles([...files, ...event.target.files]);
+        const updatedMessages = [...messages, { sender: "user", text: inputText }];
+        setMessages(updatedMessages);
+
+        try {
+            const response = await axios.post("http://localhost:5000/chat-mistral", { query: inputText });
+
+            setMessages([...updatedMessages, { sender: "bot", text: response.data.response }]);
+        } catch (error) {
+            console.error("Failed to send message:", error);
+            setMessages([...updatedMessages, { sender: "bot", text: "Sorry, I couldn't process that." }]);
+        }
+
+        setInputText("");
     };
 
     const handleEnterPress = (event) => {
@@ -94,8 +125,8 @@ export default function ChatCopy1() {
                 <List dense style={{ padding: 0, margin: 0 }}>
                     {files.map((file, index) => (
                         <ListItem key={index} style={{ padding: "0px 10px" }}>
-                            <ListItemText primary={file.name} />
-                            <IconButton onClick={() => removeFile(index)}>
+                            <ListItemText primary={file} />
+                            <IconButton onClick={() => removeFile(file)}>
                                 <Delete color="error" />
                             </IconButton>
                         </ListItem>
@@ -110,10 +141,10 @@ export default function ChatCopy1() {
                     Add More Files
                 </Button>
                 <input
-                    type="file"
-                    ref={fileInputRef}
                     hidden
                     multiple
+                    type="file"
+                    ref={fileInputRef}
                     onChange={handleFileUpload}
                 />
             </Collapse>
@@ -123,21 +154,21 @@ export default function ChatCopy1() {
                     <Card raised className="chat-card">
                         <div className="chat-messages">
                             {messages.map((msg, index) => (
-                                <Typography
+                                <div
                                     key={index}
-                                    sx={{
-                                        mt: 1,
-                                        p: 1.5,
-                                        borderRadius: 2,
+                                    style={{
+                                        marginTop: "8px",
+                                        padding: "12px",
+                                        borderRadius: "8px",
+                                        backgroundColor: msg.sender === "bot" ? "#fff" : "#D3D3D3",
                                         color: msg.sender === "bot" ? "black" : "white",
-                                        bgcolor: msg.sender === "bot" ? "#f1f1f1" : "#1976d2",
                                         alignSelf: msg.sender === "bot" ? "flex-start" : "flex-end",
-                                        display: 'inline-block',
-                                        maxWidth: '95%',
+                                        display: "inline-block",
+                                        maxWidth: "95%",
                                     }}
                                 >
-                                    {msg.text}
-                                </Typography>
+                                    <Message key={index} msg={msg} />
+                                </div>
                             ))}
                             <div ref={messagesEndRef} />
                         </div>
