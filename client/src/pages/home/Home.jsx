@@ -1,13 +1,19 @@
+import axios from "axios";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Container, Typography, Button, Box, Paper } from "@mui/material";
 import { CloudUpload, FolderOpen, InsertDriveFile } from "@mui/icons-material";
+
+import { useLoading } from "../../hooks/useLoading";
 
 
 // Home page component
 export default function Home() {
 
     const navigate = useNavigate();
+    const { setLoading } = useLoading();
+
     const [selectedOption, setSelectedOption] = useState(null);
 
     const handleOptionSelect = (option) => {
@@ -16,7 +22,24 @@ export default function Home() {
 
     const handleFileSelect = (event) => {
         const files = Array.from(event.target.files);
-        navigate("/chat", { state: { files } });
+        uploadFilesToBackend(files);
+    };
+
+    const uploadFilesToBackend = async (files) => {
+        const formData = new FormData();
+        files.forEach((file) => formData.append("files", file));
+        try {
+            setLoading(true);
+            toast.info("Sending code snapshots to AI Dev Agent for analysis, it may take a few seconds...");
+            await axios.post("http://localhost:5000/upload", formData);
+            toast.success("Files uploaded successfully.");
+            localStorage.setItem("isFileUploaded", true);
+            navigate("/chat");
+        } catch (error) {
+            console.error("File upload failed:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (

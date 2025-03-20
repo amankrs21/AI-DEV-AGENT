@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +11,8 @@ import { ExpandMore, ExpandLess, Delete, CloudUpload, Send } from "@mui/icons-ma
 
 import './Chat.css';
 import Message from "./Message";
+import { useLoading } from "../../hooks/useLoading";
+import TypingIndicator from "../../components/typing/TypingIndicator";
 
 
 // Chat component
@@ -18,8 +21,10 @@ export default function Chat() {
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
     const messagesEndRef = useRef(null);
+    const { setLoading } = useLoading();
 
     const [files, setFiles] = useState([]);
+    const [aiLoad, setAiLoad] = useState(false);
     const [inputText, setInputText] = useState("");
     const [isExpanded, setIsExpanded] = useState(false);
     const [messages, setMessages] = useState([
@@ -46,10 +51,15 @@ export default function Chat() {
 
     const fetchUploadedFiles = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/uploaded-files");
-            setFiles(response.data);
+            setLoading(true);
+            const response = await axios.get("http://localhost:5000/files");
+            toast.success(response?.data?.message || "Files fetched successfully.");
+            setFiles(response?.data?.files);
         } catch (error) {
+            toast.error(error?.response?.data?.message || "Failed to fetch uploaded files.");
             console.error("Failed to fetch uploaded files:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -59,22 +69,29 @@ export default function Chat() {
         files.forEach((file) => formData.append("files", file));
 
         try {
-            const response = await axios.post("http://localhost:5000/upload-files", formData);
+            setLoading(true);
+            toast.info("Sending code snapshots to AI Dev Agent for analysis, it may take a few seconds...");
+            const response = await axios.post("http://localhost:5000/upload", formData);
             toast.success(response?.data?.message || "Files uploaded successfully.");
             fetchUploadedFiles();
         } catch (error) {
             console.error("File upload failed:", error);
+        } finally {
+            setLoading(false);
         }
         return;
     };
 
     const removeFile = (file) => {
         try {
-            axios.delete(`http://localhost:5000/remove-file/${file}`);
+            setLoading(true);
+            axios.delete(`http://localhost:5000/files/${file}`);
             toast.success("File removed successfully.");
             setFiles(files.filter((f) => f !== file));
         } catch (error) {
             console.error("Failed to remove file:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -82,19 +99,20 @@ export default function Chat() {
     const handleSendMessage = async () => {
         if (!inputText.trim()) return;
 
+        setInputText("");
         const updatedMessages = [...messages, { sender: "user", text: inputText }];
         setMessages(updatedMessages);
 
         try {
-            const response = await axios.post("http://localhost:5000/chat-mistral", { query: inputText });
-
+            setAiLoad(true);
+            const response = await axios.post("http://localhost:5000/chat", { query: inputText });
             setMessages([...updatedMessages, { sender: "bot", text: response.data.response }]);
         } catch (error) {
             console.error("Failed to send message:", error);
             setMessages([...updatedMessages, { sender: "bot", text: "Sorry, I couldn't process that." }]);
+        } finally {
+            setAiLoad(false);
         }
-
-        setInputText("");
     };
 
     const handleEnterPress = (event) => {
@@ -170,6 +188,7 @@ export default function Chat() {
                                     <Message key={index} msg={msg} />
                                 </div>
                             ))}
+                            {aiLoad && <TypingIndicator />}
                             <div ref={messagesEndRef} />
                         </div>
                     </Card>
@@ -184,6 +203,7 @@ export default function Chat() {
                         multiline
                         maxRows={5}
                         value={inputText}
+                        disabled={aiLoad}
                         variant="outlined"
                         placeholder="How can I help you?"
                         onChange={(e) => setInputText(e.target.value)}
