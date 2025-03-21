@@ -1,0 +1,45 @@
+AI-DEV-AGENT/
+├── 📂 client/               # Frontend (React/MUI UI)
+│   ├── 📂 public/
+│   └── 📂 src/
+│       ├── 📂 components/   # Reusable UI components
+│       ├── 📂 pages/        # Page-wise routes (Home, Chat, etc.)
+│       ├── 📂 services/     # API requests, data fetch logic
+│       └── 📂 utils/        # Helper functions
+├── 📂 data/                 
+│   ├── 📂 memory/           # Store pickle files for conversation memory
+│   │   └── conversation.pkl
+│   ├── 📂 snapshots/        # Store JSON/code snapshots
+│   │   ├── snapshot_1.json
+│   │   └── snapshot_2.json
+│   └── 📂 logs/             # Store API call logs and errors
+│       ├── error.log
+│       └── request.log
+├── 📂 src/                  # Backend (Flask Codebase)
+│   ├── 📂 api/              # API route handlers
+│   │   ├── __init__.py
+│   │   ├── routes.py        # Main Flask routes
+│   │   |── utils.py         # Utility functions
+│   │   └── 📂 services/
+│   │       ├── __init__.py
+│   │       └── file_handler.py
+│   ├── 📂 core/             # Core AI/LLM Logic
+│   │   ├── ai_agent.py      # AI Agent logic
+│   │   ├── memory.py        # Memory handling (pickle load/save)
+│   │   └── chromadb.py      # (If needed in future for storing chunks)
+│   ├── 📂 models/           # Database models (if using SQL/NoSQL)
+│   │   └── model.py
+│   └── 📂 config/           # Configs and environment variables
+│       ├── config.py
+│       └── secrets.json
+├── 📂 tests/                # Unit and integration tests
+│   └── test_ai_agent.py
+├── .gitignore               # Ignore unnecessary files
+├── app.py                   # Main Flask entry point
+├── requirements.txt         # Python dependencies
+├── run.sh                   # Shell script to run the app (Linux/Mac)
+└── run.ps1                  # PowerShell script to run the app (Windows)
+
+
+to reduce the AI API calls on modyfying files, instead of ADD more files, just provide a button as MODIFY and then using a pop give user option to remove and add new files, once user save the changes an ai api should be called.
+
