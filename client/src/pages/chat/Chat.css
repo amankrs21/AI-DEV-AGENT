@@ -84,7 +84,6 @@
 }
 
 
-
 /* Wrap Markdown content properly */
 .react-markdown-wrapper {
     font-family: 'Poppins', sans-serif;
@@ -147,4 +146,13 @@
 .react-markdown-wrapper pre code {
     background: none;
     padding: 0;
+}
+
+.react-markdown-wrapper .code-container:hover .copy-button {
+    opacity: 1;
+}
+
+.react-markdown-wrapper .code-container .copy-button {
+    opacity: 0;
+    transition: opacity 0.3s;
 }

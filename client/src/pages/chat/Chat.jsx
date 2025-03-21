@@ -25,36 +25,32 @@ export default function Chat() {
 
     const [files, setFiles] = useState([]);
     const [aiLoad, setAiLoad] = useState(false);
+    const [messages, setMessages] = useState([]);
     const [inputText, setInputText] = useState("");
     const [isExpanded, setIsExpanded] = useState(false);
-    const [messages, setMessages] = useState([
-        { sender: "bot", text: "Hi there! What feature or bug issue would you like to work on today?" }
-    ]);
+
 
     useEffect(() => {
-        const isFileUploaded = localStorage.getItem("isFileUploaded");
-        if (!isFileUploaded) {
-            toast.error("Please upload files to analyze.");
-            navigate("/home");
-        } else {
-            fetchUploadedFiles();
-        }
+        fetchUploadedFiles();
+        if (messages.length === 0) { getChatHistory(); }
     }, [navigate]);
+
 
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
 
+
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
+
 
     const fetchUploadedFiles = async () => {
         try {
             setLoading(true);
             const response = await axios.get("http://localhost:5000/files");
-            toast.success(response?.data?.message || "Files fetched successfully.");
-            setFiles(response?.data?.files);
+            setFiles(response?.data);
         } catch (error) {
             toast.error(error?.response?.data?.message || "Failed to fetch uploaded files.");
             console.error("Failed to fetch uploaded files:", error);
@@ -62,6 +58,7 @@ export default function Chat() {
             setLoading(false);
         }
     };
+
 
     const handleFileUpload = async (event) => {
         const files = Array.from(event.target.files);
@@ -81,6 +78,7 @@ export default function Chat() {
         }
         return;
     };
+
 
     const removeFile = (file) => {
         try {
@@ -105,15 +103,56 @@ export default function Chat() {
 
         try {
             setAiLoad(true);
-            const response = await axios.post("http://localhost:5000/chat", { query: inputText });
-            setMessages([...updatedMessages, { sender: "bot", text: response.data.response }]);
+            const response = await fetch("http://localhost:5000/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ query: inputText }),
+            });
+            if (!response.ok) throw new Error("Failed to fetch response");
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let botMessage = { sender: "bot", text: "" };
+            setMessages([...updatedMessages, botMessage]);
+
+            let isFirstChunk = true;
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                const chunk = decoder.decode(value, { stream: true });
+                if (isFirstChunk) {
+                    setAiLoad(false);
+                    isFirstChunk = false;
+                }
+                botMessage.text += chunk;
+                setMessages([...updatedMessages, { ...botMessage }]);
+            }
         } catch (error) {
-            console.error("Failed to send message:", error);
-            setMessages([...updatedMessages, { sender: "bot", text: "Sorry, I couldn't process that." }]);
-        } finally {
+            console.error("Failed to stream message:", error);
+            setMessages([...updatedMessages, { sender: "bot", text: "Sorry, I couldn’t process that." }]);
             setAiLoad(false);
         }
     };
+
+
+    const getChatHistory = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get("http://localhost:5000/history");
+
+            const formattedMessages = response.data.flatMap(msg => [
+                { sender: "user", text: msg.user },
+                { sender: "bot", text: msg.bot }
+            ]);
+
+            setMessages(formattedMessages);
+        } catch (error) {
+            console.error("Failed to fetch chat history:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     const handleEnterPress = (event) => {
         if (event.key === 'Enter' && !event.shiftKey) {
