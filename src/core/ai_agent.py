@@ -258,6 +258,16 @@ def send_code_in_chunks(code_snapshot):
     save_memory(memory)
 
 
+# Remove a file from uploaded files
+def remove_file_from_memory(file_name):
+    removal_prompt = f"""
+    The file '{file_name}' has been removed. Do not consider this file in any responses unless it’s uploaded again.
+    """
+    memory.add_message(HumanMessage(content=removal_prompt))
+    save_memory(memory)
+    llm.invoke(memory.messages)
+
+
 # Chat with Mistral AI in streaming mode
 def chat_with_mistral(user_query):
     if not user_query:
