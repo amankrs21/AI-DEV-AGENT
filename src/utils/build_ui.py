@@ -5,7 +5,7 @@ import subprocess
 
 # Function to build React UI
 def build_react():
-    frontend_path = os.path.join(os.path.dirname(__file__), "../client")
+    frontend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../client"))
     
     print("⚡ Building Vite UI...")
 
