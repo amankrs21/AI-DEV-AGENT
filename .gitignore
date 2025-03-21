@@ -23,12 +23,10 @@ lerna-debug.log*
 *.sln
 *.sw?
 
-# Pyhton env
+# custom ignore
 .env/
-
-# OS directories
-.DS_Store
-Thumbs.db
-
 *dist/
+data/
+secrets.json
 *__pycache__/
+.backup/

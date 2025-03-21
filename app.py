@@ -1,16 +1,22 @@
+import sys
+import logging
 import threading
 import webbrowser
-import sys
+from flask_cors import CORS
 from flask import Flask, send_from_directory
-from flask_cors import CORS  # Import CORS extension
 
 # local imports
-from src.router import router
-from src.build_ui import build_react
+from src.api.routes import api
+from src.utils.build_ui import build_react
+
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
 # Create Flask app
 app = Flask(__name__, static_folder="client/dist/", static_url_path="/")
+
 
 # Enable CORS for specific origins
 CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
@@ -24,37 +30,34 @@ def serve_react():
 
 # Function to open the browser
 def open_browser():
-    """Opens the browser once after a slight delay."""
     webbrowser.open("http://127.0.0.1:5000")
 
 
-# Function to run the Flask app
+# Function to run the Flask app (Production Mode)
 def run_flask():
-    """Runs Flask without debug mode."""
-    app.register_blueprint(router)
+    app.register_blueprint(api)
     app.run(host="127.0.0.1", port=5000, debug=False, use_reloader=False)
 
 
 # Main entry point
 if __name__ == "__main__":
-    # Check if --prod flag is provided
+    
+    # Check if --prod flag is provided (Production mode)
     is_prod = len(sys.argv) > 1 and sys.argv[1] == "--prod"
-
+    
     if is_prod:
-        # Production mode: Build UI, run Flask, and open browser
-        build_react()  # Build the React UI first
+        # Production mode: Build the React UI and run the Flask server in a separate thread
+        build_react()
 
-        # Start the Flask app in a new thread
         flask_thread = threading.Thread(target=run_flask)
         flask_thread.daemon = True
         flask_thread.start()
 
-        # Open the browser once
         threading.Timer(1.5, open_browser).start()
 
-        # Keep the main thread alive
         flask_thread.join()
+        
     else:
         # Default mode: Just run the Flask server in the main thread
-        app.register_blueprint(router)
+        app.register_blueprint(api)
         app.run(host="127.0.0.1", port=5000, debug=True, use_reloader=True)
