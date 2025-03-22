@@ -19,6 +19,8 @@ Welcome to the **AI Agent Junior Developer** project! This AI Agent is designed 
 
 To get started with the AI Agent, follow these steps:
 
+`Python version user - 3.13.0`
+
 1. **Clone the Repository**
     ```bash
     git clone https://github.com/amankrs21/AI-DEV-AGENT.git
