@@ -21,7 +21,6 @@ export default function MainLayout() {
     }, []);
 
     const getChatHistory = async () => {
-        console.log("Fetching chat history...");
         try {
             setLoading(true);
             const response = await http.get("/history");

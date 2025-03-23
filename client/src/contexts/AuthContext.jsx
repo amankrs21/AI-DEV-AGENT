@@ -11,7 +11,8 @@ export { AuthContext };
 
 // AuthProvider component
 export const AuthProvider = ({ children }) => {
-    const baseURL = 'http://localhost:5000/api';
+    // const baseURL = 'http://localhost:5000/api';
+    const baseURL = window.location.origin + '/api';
 
     // Fix: Properly create and return the axios instance
     const http = useMemo(() => {
