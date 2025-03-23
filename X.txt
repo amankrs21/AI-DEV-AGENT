@@ -43,3 +43,31 @@ AI-DEV-AGENT/
 
 to reduce the AI API calls on modyfying files, instead of ADD more files, just provide a button as MODIFY and then using a pop give user option to remove and add new files, once user save the changes an ai api should be called.
 
+
+
+.welcome__textarea::-webkit-scrollbar {
+    width: 8px;
+    /* Thinner scrollbar */
+}
+
+.welcome__textarea::-webkit-scrollbar-track {
+    background: #36383A;
+    /* Matches textarea background */
+}
+
+.welcome__textarea::-webkit-scrollbar-thumb {
+    background: #555;
+    /* Subtle gray for thumb */
+    border-radius: 4px;
+}
+
+.welcome__textarea::-webkit-scrollbar-thumb:hover {
+    background: #777;
+    /* Lighter on hover */
+}
+
+
+TODO: after deploy change UI url to => /chat
+TODO: decrease the time of file upload.
+TODO: Login based memory save.
+TODO: for anoymiuos user only 5 query allowed a day and manage it from localstorage.
