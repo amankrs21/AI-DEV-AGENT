@@ -1,18 +1,20 @@
+import os
 import json
 import time
+from dotenv import load_dotenv
 from langchain_mistralai import ChatMistralAI
 from langchain_core.messages import SystemMessage, HumanMessage
 
 # Import memory functions from utils
-from src.utils.config_loader import load_secrets
 from .memory import load_memory, save_memory
 
 
 # Load secrets
-secrets = load_secrets()
-api_key = secrets.get("MISTRAL_API_KEY")
+load_dotenv()
+api_key = os.getenv("MISTRAL_API_KEY") 
+print(f"API Key: {api_key}")
 if not api_key:
-    raise ValueError("Mistral API key not found in secrets.json! Please check your secrets file.")
+    raise ValueError("Mistral API key not found.")
 
 
 # Load existing memory or create a new one

@@ -9,6 +9,7 @@ os.makedirs(os.path.dirname(MEMORY_FILE), exist_ok=True)
 
 # Save memory to a file
 def save_memory(memory):
+    os.makedirs(os.path.dirname(MEMORY_FILE), exist_ok=True)
     with open(MEMORY_FILE, "wb") as file:
         pickle.dump(memory, file)
     print("✅ Memory saved successfully!")
