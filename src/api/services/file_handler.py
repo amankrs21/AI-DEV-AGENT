@@ -22,6 +22,7 @@ def save_files():
         return {"error": "No valid files found!"}, 400
 
     files_data = {}
+    os.makedirs(os.path.dirname(SNAPSHOT_FILE), exist_ok=True)
     if os.path.exists(SNAPSHOT_FILE):
         try:
             with open(SNAPSHOT_FILE, 'r') as f:
