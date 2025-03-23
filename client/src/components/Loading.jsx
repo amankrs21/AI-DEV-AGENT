@@ -1,10 +1,8 @@
 import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Typography, CircularProgress } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 import { useLoading } from '../hooks/useLoading';
-import { useEffect, useState } from 'react';
-import { Typography } from '@mui/material';
-
 
 // Loading spinner
 export default function Loading() {
@@ -16,7 +14,7 @@ export default function Loading() {
         if (loading) {
             timer = setTimeout(() => {
                 setMessage("Please wait, it's taking longer than usual.");
-            }, 3000);
+            }, 5000);
         }
         return () => {
             clearTimeout(timer);
@@ -41,10 +39,10 @@ export default function Loading() {
             flexDirection: 'column',
             justifyContent: 'center',
             backdropFilter: 'blur(1px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.5)',
+            backgroundColor: 'rgba(255, 255, 255, 0.7)',
         }}>
-            <CircularProgress color="secondary" size="3rem" />
-            <Typography variant="h6" color="secondary" fontWeight={600} sx={{ mt: 2 }}>
+            <CircularProgress color="primary" size="3rem" />
+            <Typography variant="h6" color="primary" fontWeight={600} sx={{ mt: 2 }}>
                 {message}
             </Typography>
         </Box>

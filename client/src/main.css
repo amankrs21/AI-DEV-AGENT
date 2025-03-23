@@ -1,0 +1,447 @@
+/* Main CSS */
+.main {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+    flex-direction: row;
+    background-color: #1d1e20;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.main__left {
+    width: 17%;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.main__center {
+    width: 65%;
+    height: 100%;
+    flex-shrink: 0;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main__right {
+    width: 18%;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* Title CSS */
+.title {
+    gap: 5px;
+    padding: 10px;
+    color: #D3D2D2;
+    display: flex;
+    cursor: pointer;
+    user-select: none;
+    align-items: center;
+}
+
+.title:hover {
+    color: #fff;
+}
+
+.title img {
+    width: 40px;
+    height: 40px;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* FileManager css */
+.filemanager {
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    display: flex;
+    color: #D3D2D2;
+    user-select: none;
+    justify-content: center;
+}
+
+.filemanager__header {
+    cursor: pointer;
+}
+
+.filemanager__header:hover {
+    color: #fff;
+}
+
+.filemanager__content {
+    top: 50px;
+    right: 5px;
+    width: 300px;
+    padding: 10px;
+    z-index: 1000;
+    max-height: 500px;
+    border-radius: 5px;
+    position: fixed;
+    overflow-y: auto;
+    background: #36383A;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.filemanager__content[hidden] {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.filemanager__content ul {
+    margin: 0;
+    padding: 0 10px;
+    list-style: none;
+}
+
+.filemanager__content ul li {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Welcome User */
+.welcome {
+    gap: 10px;
+    width: 100%;
+    padding: 50px;
+    color: #D3D2D2;
+    display: flex;
+    user-select: none;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.welcome__textarea {
+    width: 100%;
+}
+
+.welcome__textarea .MuiOutlinedInput-root {
+    font-size: 16px;
+    margin-top: 40px;
+    border-radius: 10px;
+    color: #D3D2D2;
+    background: #36383A;
+    font-family: sans-serif;
+}
+
+.welcome__textarea .MuiOutlinedInput-input {
+    padding: 10px 40px 10px 10px;
+}
+
+.welcome__textarea .MuiOutlinedInput-input::placeholder {
+    opacity: 1;
+    color: #D1D4DA;
+}
+
+.welcome__textarea .MuiOutlinedInput-input::-webkit-scrollbar {
+    width: 8px;
+}
+
+.welcome__textarea .MuiOutlinedInput-input::-webkit-scrollbar-track {
+    background: #36383A;
+}
+
+.welcome__textarea .MuiOutlinedInput-input::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+.welcome__textarea .MuiOutlinedInput-input::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+.welcome__textarea .MuiOutlinedInput-input {
+    scrollbar-width: thin;
+    scrollbar-color: #555 #36383A;
+}
+
+.welcome__typewriter {
+    margin-top: 60px;
+    color: #D3D2D2;
+    text-align: center;
+}
+
+/* Chat CSS */
+.chat {
+    width: 100%;
+    height: 100%;
+    padding: 0px 40px 0px 40px;
+    color: #D3D2D2;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.chat__messages {
+    gap: 10px;
+    width: 100%;
+    flex-grow: 1;
+    padding-top: 20px;
+    padding-bottom: 150px;
+    display: flex;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    flex-direction: column;
+    scrollbar-color: #555 #1d1e20;
+}
+
+.chat__scrollToBottom {
+    right: -50px;
+    bottom: 40px;
+    margin: 10px;
+    color: #D3D2D2;
+    cursor: pointer;
+    position: absolute;
+}
+
+.chat__messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat__messages::-webkit-scrollbar-track {
+    background: #1d1e20;
+}
+
+.chat__messages::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+.chat__messages::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+.message-pair {
+    gap: 10px;
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+}
+
+.chat__input {
+    left: 50px;
+    right: 50px;
+    bottom: 10px;
+    width: auto;
+    position: absolute;
+}
+
+/* Chat messages CSS */
+.chat-message-wrapper {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    word-wrap: break-word;
+    font-family: 'Poppins', sans-serif;
+}
+
+.chat-message-wrapper.bot {
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 8px;
+    color: #D3D2D2;
+    align-self: flex-start;
+    background: transparent;
+}
+
+.chat-message-wrapper.user {
+    max-width: 80%;
+    padding: 10px 15px;
+    border-radius: 8px;
+    color: #D3D2D2;
+    align-self: flex-end;
+    background: #2a2c2e;
+    display: inline-block;
+}
+
+.chat-message-wrapper p {
+    margin: 5px 0;
+}
+
+.markdown-heading {
+    margin: 10px 0 5px;
+    color: #D3D2D2;
+}
+
+.markdown-heading h1 {
+    font-size: 1.5em;
+}
+
+.markdown-heading h2 {
+    font-size: 1.3em;
+}
+
+.markdown-heading h3 {
+    font-size: 1.2em;
+}
+
+.markdown-heading h4 {
+    font-size: 1.1em;
+}
+
+.markdown-list {
+    margin: 10px 0;
+    padding-left: 20px;
+    color: #D3D2D2;
+}
+
+.markdown-list ul {
+    list-style-type: disc;
+}
+
+/* From your old code */
+.markdown-list ol {
+    list-style-type: decimal;
+}
+
+.markdown-list-item {
+    margin: 5px 0;
+}
+
+/* Bold and Italics */
+.chat-message-wrapper strong {
+    font-weight: 600;
+}
+
+.chat-message-wrapper em {
+    font-style: italic;
+}
+
+/* Links */
+.chat-message-wrapper a {
+    color: #1976d2;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.chat-message-wrapper a:hover {
+    text-decoration: underline;
+}
+
+/* Code styles */
+.code-block-wrapper {
+    width: 100%;
+    margin: 10px 0;
+    max-width: 100%;
+    overflow-x: auto;
+    position: relative;
+    display: inline-block;
+}
+
+.code-block-wrapper pre {
+    margin: 0;
+    padding: 12px;
+    font-size: 13px;
+    max-width: 100%;
+    border-radius: 5px;
+    overflow-x: auto;
+    white-space: pre;
+    word-wrap: normal;
+    background: #121314;
+}
+
+.code-block-wrapper pre::-webkit-scrollbar {
+    height: 7px;
+}
+
+.code-block-wrapper pre::-webkit-scrollbar-track {
+    background: #1d1e20;
+}
+
+.code-block-wrapper pre::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+.code-block-wrapper pre::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+.inline-code {
+    font-size: 14px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    color: #D3D2D2;
+    background: #2a2c2e;
+    font-family: 'Fira Code', monospace;
+}
+
+.chat-message-wrapper code {
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+}
+
+.copy-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+/* Typing Indicator CSS */
+.typing-indicator-wrapper {
+    display: flex;
+    align-items: center;
+    margin-top: 30px;
+    padding-left: 10px;
+    margin-bottom: 20px;
+}
+
+.typing-text {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+    margin-right: 8px;
+    color: #1976d2;
+    font-family: sans-serif;
+}
+
+.typing-indicator-container {
+    display: flex;
+    justify-content: flex-start;
+    padding: 8px;
+}
+
+.typing-indicator-dot {
+    width: 8px;
+    height: 8px;
+    margin: 0 4px;
+    border-radius: 50%;
+    background-color: #1976d2;
+    animation: blink 1.4s infinite ease-in-out;
+}
+
+.typing-indicator-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes blink {
+
+    0%,
+    80%,
+    100% {
+        opacity: 0.3;
+        transform: scale(0.8);
+    }
+
+    40% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

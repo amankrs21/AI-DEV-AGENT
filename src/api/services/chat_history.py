@@ -1,5 +1,6 @@
 import os
 import json
+import shutil
 
 
 CHAT_HISTORY_FILE = "data/chat/history.json"
@@ -8,6 +9,7 @@ os.makedirs(os.path.dirname(CHAT_HISTORY_FILE), exist_ok=True)
 
 # funtion to update chat history
 def update_chat_history(user_query, response_message):
+    os.makedirs(os.path.dirname(CHAT_HISTORY_FILE), exist_ok=True)
     if not os.path.exists(CHAT_HISTORY_FILE):
         with open(CHAT_HISTORY_FILE, "w") as f:
             json.dump([], f)
@@ -41,8 +43,20 @@ def get_chat_history():
 
 # function to delete chat history
 def delete_chat_history():
-    if os.path.exists(CHAT_HISTORY_FILE):
-        os.remove(CHAT_HISTORY_FILE)
-        return {}, 204
+    data_directory = "data"
+    try:
+        if not os.path.exists(data_directory):
+            return {"error": "No 'data' folder found to clear!"}, 404
 
-    return {"error": "No chat history found to delete!"}, 404
+        for item in os.listdir(data_directory):
+            item_path = os.path.join(data_directory, item)
+            if os.path.isfile(item_path):
+                os.remove(item_path)
+            elif os.path.isdir(item_path):
+                shutil.rmtree(item_path)
+                
+        return {}, 204
+    
+    except Exception as e:
+        return {"error": f"Failed to clear 'data' folder contents: {str(e)}"}, 500
+    
