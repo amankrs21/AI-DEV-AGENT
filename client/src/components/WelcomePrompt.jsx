@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import ChatInput from './chat/ChatInput';
 import TypewriterEffect from './typing/TypewriterEffect';
 import { useAuth } from '../hooks/useAuth';
+import { Container } from '@mui/material';
 
 
 // Welcome Prompt component
@@ -71,7 +72,7 @@ export default function WelcomePrompt({ setMessages }) {
     };
 
     return (
-        <div className="welcome">
+        <Container maxWidth="md" className="welcome">
             <h2 style={{ color: 'white' }}>Hello! {greeting} 😊</h2>
             <h2>How can I assist you today?</h2>
 
@@ -89,6 +90,6 @@ export default function WelcomePrompt({ setMessages }) {
                     deleteSpeed={20}
                 />
             </h3>
-        </div>
+        </Container>
     );
 }

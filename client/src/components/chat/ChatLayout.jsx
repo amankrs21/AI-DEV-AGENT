@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useEffect, useRef, useState } from 'react';
-import { IconButton } from '@mui/material';
+import { Container, IconButton } from '@mui/material';
 import { ArrowDownward } from '@mui/icons-material';
 
 import ChatInput from './ChatInput';
@@ -79,32 +79,34 @@ export default function ChatLayout({ messages, setMessages }) {
     return (
         <div className="chat">
             <div className="chat__messages">
-                {messages.length === 0 ? (
-                    <p style={{ color: '#D3D2D2' }}>No messages yet...</p>
-                ) : (
-                    messages.map((msg, index) => (
-                        <div key={index} className="message-pair">
-                            {msg.user && <ChatMessage msg={{ user: msg.user }} />}
-                            {msg.bot && <ChatMessage msg={{ bot: msg.bot }} />}
-                        </div>
-                    ))
-                )}
+                <Container maxWidth="md" >
+                    {messages.length === 0 ? (
+                        <p style={{ color: '#D3D2D2' }}>No messages yet...</p>
+                    ) : (
+                        messages.map((msg, index) => (
+                            <div key={index} className="message-pair">
+                                {msg.user && <ChatMessage msg={{ user: msg.user }} />}
+                                {msg.bot && <ChatMessage msg={{ bot: msg.bot }} />}
+                            </div>
+                        ))
+                    )}
 
-                {aiLoad && <TypingIndicator message="thinking" />}
+                    {aiLoad && <TypingIndicator message="thinking" />}
 
-                <div className="chat__scrollToBottom">
-                    <IconButton
-                        sx={{ backgroundColor: '#36383A', '&:hover': { backgroundColor: '#2F3135' } }}
-                        onClick={scrollToBottom}
-                    >
-                        <ArrowDownward color="primary" />
-                    </IconButton>
-                </div>
-                <div ref={messagesEndRef} />
+                    <div className="chat__scrollToBottom">
+                        <IconButton
+                            sx={{ backgroundColor: '#36383A', '&:hover': { backgroundColor: '#2F3135' } }}
+                            onClick={scrollToBottom}
+                        >
+                            <ArrowDownward color="primary" />
+                        </IconButton>
+                    </div>
+                    <div ref={messagesEndRef} />
+                </Container>
             </div>
-            <div className="chat__input">
+            <Container maxWidth="md" className="chat__input">
                 <ChatInput onSend={handleChatSend} />
-            </div>
+            </Container>
         </div>
     );
 }
