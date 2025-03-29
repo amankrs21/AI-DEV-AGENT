@@ -92,15 +92,47 @@
 
 .navbar__content ul {
     margin: 0;
-    padding: 10px 0 0 10px;
+    padding: 0;
     list-style: none;
+    overflow-y: auto;
 }
 
 .navbar__content ul li {
     width: 100%;
+    margin-top: 5px;
+    padding: 5px 10px;
+    border-radius: 5px;
     display: flex;
+    cursor: pointer;
     align-items: center;
+    transition: all 0.2s ease;
+    border: 1px solid #1976d2;
+    background-color: #2a2c2e;
     justify-content: space-between;
+}
+
+.navbar__content ul li:hover {
+    border-color: #42a5f5;
+    background-color: #3a3c3e;
+}
+
+.navbar__content ul li.no-history {
+    border: none;
+    justify-content: center;
+    background-color: transparent;
+}
+
+.navbar__content ul li .chat-name {
+    flex-grow: 1;
+    font-size: 14px;
+    color: #ffffff;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.navbar__content ul li .MuiIconButton-root {
+    padding: 4px;
 }
 
 /* FileManager css */
