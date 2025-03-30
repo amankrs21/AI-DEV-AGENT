@@ -102,9 +102,3 @@ jobs:
         with:
           app-name: 'botaidev'
           slot-name: 'Production'
-
-      - name: Output Web App URL
-        run: echo "Web App URL: https://${{ steps.deploy-to-webapp.outputs.webapp-url }}"
-        id: webapp-url
-        env:
-          AZURE_WEBAPP_URL: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
