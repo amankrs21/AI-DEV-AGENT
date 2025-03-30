@@ -24,7 +24,8 @@ export const AuthProvider = ({ children }) => {
     const [isAuthLoading, setIsAuthLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    const baseUrl = 'http://192.168.1.39:5000/api';
+    // const baseUrl = 'http://192.168.1.39:5000/api';
+    const baseUrl = window.location.origin + '/api';
 
     const http = useMemo(() => {
         const instance = axios.create({
