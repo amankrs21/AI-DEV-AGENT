@@ -144,26 +144,25 @@ def chat_mistral():
     return response
 
 
-# # Route to chat processing (public)
-# @api.route('/public/chat', methods=['POST'])
-# def chat_mistral_public():
-#     data = request.json
-#     user_query = data.get('query', None)
-#     session_id = data.get('session_id', None)  # Optional: allow client to provide session ID
+# Route to chat processing (public)
+@api.route('/public/chat', methods=['POST'])
+def chat_mistral_public():
+    data = request.json
+    user_query = data.get('query', None)
+    session_id = data.get('session_id', None)
+    
+    if not user_query:
+        return jsonify({'error': 'No query provided'}), 400
+    if not session_id:
+        return jsonify({'error': 'No session_id provided'}), 400
 
-#     if not user_query:
-#         return jsonify({'error': 'No query provided'}), 400
-        
-#     stream = public_agent_chat(user_query, session_id)
+    stream = public_agent_chat(user_query, session_id)
 
-#     def event_stream():
-#         full_response = ''
-#         for chunk in stream:
-#             full_response += chunk
-#             yield chunk
-            
-#     response = Response(event_stream(), mimetype='text/event-stream')
-#     if session_id:
-#         response.headers['X-Session-ID'] = session_id
-#         response.headers['Access-Control-Expose-Headers'] = 'X-Session-ID'
-#     return response
+    def event_stream():
+        for chunk in stream:
+            yield chunk
+    
+    response = Response(event_stream(), mimetype='text/event-stream')
+    response.headers['X-Session-ID'] = session_id
+    response.headers['Access-Control-Expose-Headers'] = 'X-Session-ID'
+    return response
