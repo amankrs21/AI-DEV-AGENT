@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types';
+import Box from '@mui/material/Box';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import Box from '@mui/material/Box';
 import {
     Avatar, Dialog, DialogContent, Button, TextField, InputAdornment, IconButton, Typography
 } from '@mui/material';
@@ -146,3 +147,8 @@ export default function Login({ open, setOpen }) {
         </Dialog>
     );
 }
+
+Login.propTypes = {
+    open: PropTypes.bool.isRequired,
+    setOpen: PropTypes.func.isRequired,
+};

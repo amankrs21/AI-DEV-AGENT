@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
+import { useState } from 'react';
 import {
     Avatar, Dialog, DialogContent, Button, TextField, InputAdornment, IconButton, Typography
 } from "@mui/material";
@@ -100,3 +101,9 @@ export default function Register({ open, setOpen, handleSubmit }) {
         </Dialog>
     );
 }
+
+Register.propTypes = {
+    open: PropTypes.bool.isRequired,
+    setOpen: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
+};

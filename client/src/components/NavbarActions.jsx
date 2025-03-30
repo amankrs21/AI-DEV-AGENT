@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { useEffect, useRef, useState } from 'react';
 import { Button, IconButton, Typography } from '@mui/material';
@@ -174,4 +175,13 @@ export default function NavbarActions({ chatId, history, setChatId, setHistory, 
             )}
         </div>
     );
-}
+};
+
+NavbarActions.propTypes = {
+    chatId: PropTypes.string,
+    history: PropTypes.array,
+    setChatId: PropTypes.func.isRequired,
+    setHistory: PropTypes.func.isRequired,
+    setMessages: PropTypes.func.isRequired,
+    handleOpen: PropTypes.func.isRequired,
+};

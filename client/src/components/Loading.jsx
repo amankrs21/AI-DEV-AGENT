@@ -1,8 +1,9 @@
 import Box from '@mui/material/Box';
-import { Typography, CircularProgress } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { Typography, CircularProgress } from '@mui/material';
 
 import { useLoading } from '../hooks/useLoading';
+
 
 // Loading spinner
 export default function Loading() {

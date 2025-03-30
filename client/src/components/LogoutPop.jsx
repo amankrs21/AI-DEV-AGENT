@@ -1,7 +1,7 @@
+import PropTypes from 'prop-types';
 import {
     Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
 } from '@mui/material';
-import PropTypes from 'prop-types';
 
 
 // Logout confirmation dialog
@@ -30,9 +30,9 @@ export default function LogoutPop({ open, handleLogout }) {
             </DialogActions>
         </Dialog>
     )
-}
+};
 
 LogoutPop.propTypes = {
     open: PropTypes.bool.isRequired,
     handleLogout: PropTypes.func.isRequired
-}
+};
