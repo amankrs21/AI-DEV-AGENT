@@ -19,7 +19,6 @@ app = Flask(__name__, static_folder="client/dist/", static_url_path="/")
 
 # JWT Configuration
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET')
-app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET')
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 app.config['JWT_ACCESS_COOKIE_NAME'] = 'access_token'
 app.config['JWT_COOKIE_CSRF_PROTECT'] = False   # Disable CSRF protection for now
