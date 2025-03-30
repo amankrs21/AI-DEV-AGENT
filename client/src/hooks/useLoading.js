@@ -4,4 +4,6 @@ import { LoadingContext } from "../contexts/LoadingContext";
 
 
 // Custom hook to use the LoadingContext
-export const useLoading = () => useContext(LoadingContext);
+export const useLoading = () => {
+    return useContext(LoadingContext);
+}

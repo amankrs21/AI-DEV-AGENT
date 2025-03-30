@@ -4,12 +4,13 @@ import {
 } from '@mui/material';
 
 
+// ConfirmPop component
 export default function ConfirmPop({ open, setOpen, confirmAction }) {
     return (
         <Dialog
             fullWidth
             open={open}
-            maxWidth='sm'
+            maxWidth='xs'
             onClose={() => setOpen(false)}
         >
             <DialogTitle>Confirm Action</DialogTitle>
