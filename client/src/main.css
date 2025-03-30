@@ -39,6 +39,18 @@
     position: absolute;
 }
 
+
+/* Auth Loading */
+.auth__loading {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #1d1e20;
+}
+
 /* Title CSS */
 .title {
     gap: 5px;
@@ -73,11 +85,11 @@
 
 .navbar__content {
     top: 55px;
-    right: 5px;
-    width: 300px;
+    right: 15px;
+    width: 330px;
     padding: 10px;
     z-index: 1000;
-    max-height: 500px;
+    max-height: 420px;
     border-radius: 5px;
     position: fixed;
     overflow-y: auto;
@@ -133,57 +145,6 @@
 
 .navbar__content ul li .MuiIconButton-root {
     padding: 4px;
-}
-
-/* FileManager css */
-.filemanager {
-    width: 100%;
-    padding: 10px;
-    font-size: 18px;
-    display: flex;
-    color: #D3D2D2;
-    user-select: none;
-    justify-content: center;
-}
-
-.filemanager__header {
-    cursor: pointer;
-}
-
-.filemanager__header:hover {
-    color: #fff;
-}
-
-.filemanager__content {
-    top: 50px;
-    right: 5px;
-    width: 300px;
-    padding: 10px;
-    z-index: 1000;
-    max-height: 500px;
-    border-radius: 5px;
-    position: fixed;
-    overflow-y: auto;
-    background: #36383A;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.filemanager__content[hidden] {
-    opacity: 0;
-    pointer-events: none;
-}
-
-.filemanager__content ul {
-    margin: 0;
-    padding: 0 10px;
-    list-style: none;
-}
-
-.filemanager__content ul li {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 }
 
 /* Welcome User */
