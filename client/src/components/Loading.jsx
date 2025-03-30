@@ -39,7 +39,7 @@ export default function Loading() {
             flexDirection: 'column',
             justifyContent: 'center',
             backdropFilter: 'blur(1px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.7)',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
         }}>
             <CircularProgress color="primary" size="3rem" />
             <Typography variant="h6" color="primary" fontWeight={600} sx={{ mt: 2 }}>
