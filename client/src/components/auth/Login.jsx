@@ -1,15 +1,20 @@
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import Box from '@mui/material/Box';
 import {
     Avatar, Dialog, DialogContent, Button, TextField, InputAdornment, IconButton, Typography
-} from "@mui/material";
+} from '@mui/material';
 import { LockOutlined, Visibility, VisibilityOff, Login as LoginIcon } from '@mui/icons-material';
 
 import Register from './Register';
+import { useAuth } from '../../hooks/useAuth';
+import { useLoading } from '../../hooks/useLoading';
 
 
 // Login component
 export default function Login({ open, setOpen }) {
+    const { http, refreshAuth } = useAuth();
+    const { setLoading } = useLoading();
     const [openReg, setOpenReg] = useState(false);
     const [showPass, setShowPass] = useState(false);
 
@@ -21,13 +26,42 @@ export default function Login({ open, setOpen }) {
         setOpenReg(true);
     };
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
+        try {
+            setLoading(true);
+            await http.post('/login', {
+                email: e?.target?.email?.value,
+                password: e?.target?.password?.value,
+            });
+            await refreshAuth();
+            toast.success('Login successful!!');
+            setOpen(false);
+        } catch (error) {
+            console.error(error);
+            toast.error(error?.response?.data?.error ?? 'An error occurred');
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleRegister = () => {
-        setOpenReg(false);
-        setOpen(true);
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        try {
+            setLoading(true);
+            await http.post('/register', {
+                name: e.target.name.value,
+                email: e.target.email.value,
+                password: e.target.password.value,
+            });
+            toast.success('Registration successful!!');
+            setOpenReg(false);
+        } catch (error) {
+            console.error(error);
+            toast.error(error?.response?.data?.error ?? 'An error occurred');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -37,7 +71,7 @@ export default function Login({ open, setOpen }) {
             maxWidth="xs"
             onClose={handleClose}
             sx={{
-                '& .MuiDialog-paper': { color: '#D3D2D2', borderRadius: '8px', backgroundColor: '#1d1e20' }
+                '& .MuiDialog-paper': { color: '#D3D2D2', borderRadius: '8px', backgroundColor: '#1d1e20' },
             }}
         >
             <DialogContent
@@ -62,7 +96,7 @@ export default function Login({ open, setOpen }) {
                         fullWidth
                         name="email"
                         type="email"
-                        className='login__input'
+                        className="login__input"
                         placeholder="Enter your Email*"
                         sx={{ my: 3 }}
                     />
@@ -70,9 +104,9 @@ export default function Login({ open, setOpen }) {
                         required
                         fullWidth
                         name="password"
-                        className='login__input'
+                        className="login__input"
                         placeholder="Enter your password*"
-                        type={showPass ? "text" : "password"}
+                        type={showPass ? 'text' : 'password'}
                         slotProps={{
                             input: {
                                 endAdornment: (
@@ -93,9 +127,10 @@ export default function Login({ open, setOpen }) {
                         fullWidth
                         type="submit"
                         variant="contained"
+                        endIcon={<LoginIcon />}
                         sx={{ mt: 4, mb: 3 }}
                     >
-                        Sign In &nbsp; <LoginIcon />
+                        Sign In
                     </Button>
                     <Button
                         fullWidth
@@ -103,11 +138,11 @@ export default function Login({ open, setOpen }) {
                         onClick={handleOpenRegister}
                         sx={{ color: '#D3D2D2', '&:hover': { color: '#fff' } }}
                     >
-                        Don't have an account? Sign Up
+                        Don’t have an account? Sign Up
                     </Button>
                 </Box>
             </DialogContent>
-            {openReg && <Register open={openReg} handleSubmit={handleRegister} />}
+            {openReg && <Register open={openReg} setOpen={setOpenReg} handleSubmit={handleRegister} />}
         </Dialog>
     );
 }

@@ -7,7 +7,7 @@ import { AppRegistration, Visibility, VisibilityOff, HowToReg } from '@mui/icons
 
 
 // Register component
-export default function Register({ open, handleSubmit }) {
+export default function Register({ open, setOpen, handleSubmit }) {
 
     const [showPass, setShowPass] = useState(false);
 
@@ -16,7 +16,7 @@ export default function Register({ open, handleSubmit }) {
             open={open}
             keepMounted
             maxWidth="xs"
-            onClose={handleSubmit}
+            onClose={() => setOpen(false)}
             sx={{
                 '& .MuiDialog-paper': { color: '#D3D2D2', borderRadius: '8px', backgroundColor: '#1d1e20' }
             }}
@@ -41,7 +41,7 @@ export default function Register({ open, handleSubmit }) {
                     <TextField
                         required
                         fullWidth
-                        name="email"
+                        name="name"
                         className='login__input'
                         placeholder="Enter your Name*"
                         sx={{ my: 3 }}
@@ -82,14 +82,15 @@ export default function Register({ open, handleSubmit }) {
                         fullWidth
                         type="submit"
                         variant="contained"
+                        endIcon={<HowToReg />}
                         sx={{ mt: 4, mb: 3 }}
                     >
-                        Sign Up &nbsp; <HowToReg />
+                        Sign Up
                     </Button>
                     <Button
                         fullWidth
                         variant="text"
-                        onClick={handleSubmit}
+                        onClick={() => setOpen(false)}
                         sx={{ color: '#D3D2D2', '&:hover': { color: '#fff' } }}
                     >
                         Already have an account? Sign in
