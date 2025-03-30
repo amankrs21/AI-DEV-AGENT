@@ -36,7 +36,7 @@ jobs:
   # 2. Express App Hosting Job (depends on SonarCloud success, but only runs on push to `main`)
   flask-build:
     runs-on: ubuntu-latest
-    needs: sonarcloud-analysis
+    needs: sonarqube
     if: github.ref == 'refs/heads/main'
 
     steps:
