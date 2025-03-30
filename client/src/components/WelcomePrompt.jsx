@@ -1,15 +1,19 @@
+import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 
 import ChatInput from './chat/ChatInput';
 import TypewriterEffect from './typing/TypewriterEffect';
 import { useAuth } from '../hooks/useAuth';
-import { Container } from '@mui/material';
+import { publicStreamChat } from '../api/publicChatApi';
+import { privateStreamChat } from '../api/privateChatApi';
 
 
 // Welcome Prompt component
-export default function WelcomePrompt({ setMessages }) {
+export default function WelcomePrompt({ setChatId, setMessages, setPublicChat, fetchHistory }) {
 
-    const { baseURL } = useAuth();
+    const { baseURL, isAuthenticated, userData } = useAuth();
+
     const [greeting, setGreeting] = useState("Good Morning");
 
     useEffect(() => {
@@ -22,58 +26,37 @@ export default function WelcomePrompt({ setMessages }) {
     }, []);
 
     const handleChatSend = async (text) => {
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            { user: text },
-        ]);
-
-        try {
-            const response = await fetch(`${baseURL}/chat`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ query: text }),
+        if (isAuthenticated) {
+            const success = await privateStreamChat({
+                baseURL,
+                query: text,
+                chatId: null,
+                setMessages,
+                setChatId,
             });
-            if (!response.ok) throw new Error("Failed to fetch response");
-
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-
-            setMessages((prevMessages) => [
-                ...prevMessages,
-                { bot: "" },
-            ]);
-
-            let isFirstChunk = true;
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                const chunk = decoder.decode(value, { stream: true });
-                if (isFirstChunk) {
-                    isFirstChunk = false;
-                }
-                setMessages((prevMessages) => {
-                    const lastMessage = prevMessages[prevMessages.length - 1];
-                    if (lastMessage.bot !== undefined) {
-                        return [
-                            ...prevMessages.slice(0, -1),
-                            { bot: lastMessage.bot + chunk },
-                        ];
-                    }
-                    return [...prevMessages, { bot: chunk }];
-                });
+            if (success) { await fetchHistory(); }
+        } else {
+            const success = await publicStreamChat({
+                baseURL,
+                setMessages,
+                query: text,
+                setPublicChat,
+            });
+            if (!success) {
+                toast.error("Failed to send message. Please reload the page.");
             }
-        } catch (error) {
-            console.error("Failed to stream message:", error);
-            setMessages((prevMessages) => [
-                ...prevMessages,
-                { bot: "Sorry, I couldn’t process that." },
-            ]);
         }
     };
 
     return (
-        <Container maxWidth="md" className="welcome">
-            <h2 style={{ color: 'white' }}>Hello! {greeting} 😊</h2>
+        <div className="welcome">
+            {isAuthenticated ? (
+                <h2 style={{ color: 'white' }}>
+                    {greeting}, {userData?.name.split(' ')[0]} 😊
+                </h2>
+            ) :
+                <h2 style={{ color: 'white' }}>Hello! {greeting} 😊</h2>
+            }
             <h2>How can I assist you today?</h2>
 
             <ChatInput onSend={handleChatSend} />
@@ -90,6 +73,13 @@ export default function WelcomePrompt({ setMessages }) {
                     deleteSpeed={20}
                 />
             </h3>
-        </Container>
+        </div>
     );
-}
+};
+
+WelcomePrompt.propTypes = {
+    setChatId: PropTypes.func.isRequired,
+    setMessages: PropTypes.func.isRequired,
+    setPublicChat: PropTypes.func.isRequired,
+    fetchHistory: PropTypes.func.isRequired,
+};
