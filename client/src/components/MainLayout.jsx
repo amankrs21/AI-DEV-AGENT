@@ -18,22 +18,26 @@ export default function MainLayout() {
     const [chatId, setChatId] = useState(null);
     const [history, setHistory] = useState([]);
     const [messages, setMessages] = useState([]);
+    const [publicChat, setPublicChat] = useState(false);
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const initialChatId = urlParams.get('chatId');
 
         if (isAuthenticated && initialChatId && chatId !== initialChatId) {
+            setPublicChat(false);
             setChatId(initialChatId);
             handleOpenHistory(initialChatId);
         } else if (isAuthenticated && history.length == 0) {
             getChatHistory();
+            setPublicChat(false);
             if (!initialChatId) {
                 window.history.replaceState({}, '', window.location.pathname);
             }
         } else if (!isAuthenticated) {
-            setChatId(null);
+            setHistory([]);
             setMessages([]);
+            setChatId(null);
             window.history.replaceState({}, '', window.location.pathname);
         }
 
@@ -64,6 +68,7 @@ export default function MainLayout() {
         if (e === null) {
             setChatId(null);
             setMessages([]);
+            setPublicChat(false);
             window.history.pushState({}, '', '/');
             return;
         }
@@ -93,17 +98,18 @@ export default function MainLayout() {
             </div>
 
             <div className='main__center'>
-                {chatId === null ? (
-                    <WelcomePrompt
-                        setChatId={setChatId}
-                        setMessages={setMessages}
-                        fetchHistory={getChatHistory}
-                    />
-                ) : (
+                {(chatId !== null || publicChat) ? (
                     <ChatLayout
                         chatId={chatId}
                         messages={messages}
                         setMessages={setMessages}
+                    />
+                ) : (
+                    <WelcomePrompt
+                        setChatId={setChatId}
+                        setMessages={setMessages}
+                        setPublicChat={setPublicChat}
+                        fetchHistory={getChatHistory}
                     />
                 )}
             </div>
