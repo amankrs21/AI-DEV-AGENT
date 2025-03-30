@@ -1,87 +1,89 @@
-import PropTypes from 'prop-types';
-import { useEffect, useRef, useState } from 'react';
-import { Container, IconButton } from '@mui/material';
-import { ArrowDownward } from '@mui/icons-material';
+/* eslint-disable react-hooks/exhaustive-deps */
+import PropTypes from "prop-types";
+import { toast } from "react-toastify";
+import { useEffect, useRef, useState } from "react";
+import { ArrowDownward } from "@mui/icons-material";
+import { Container, IconButton } from "@mui/material";
 
-import ChatInput from './ChatInput';
-import ChatMessage from './ChatMessage';
-import { useAuth } from '../../hooks/useAuth';
-import TypingIndicator from '../typing/TypingIndicator';
+import ChatInput from "./ChatInput";
+import ChatMessage from "./ChatMessage";
+import TypingIndicator from "../typing/TypingIndicator";
+import { useAuth } from "../../hooks/useAuth";
+import { publicStreamChat } from "../../api/publicChatApi";
+import { privateStreamChat } from "../../api/privateChatApi";
 
 
 // Chat layout component
-export default function ChatLayout({ messages, setMessages }) {
-    const { baseURL } = useAuth();
+export default function ChatLayout({ chatId, messages, setMessages }) {
+    const { baseURL, isAuthenticated } = useAuth();
+
     const messagesEndRef = useRef(null);
+    const chatContainerRef = useRef(null);
     const [aiLoad, setAiLoad] = useState(false);
+    const [autoScroll, setAutoScroll] = useState(true);
 
     useEffect(() => {
-        scrollToBottom();
+        if (chatId) {
+            window.history.pushState({}, "", `?chatId=${chatId}`);
+        }
+    }, [chatId]);
+
+    useEffect(() => {
+        if (autoScroll) {
+            scrollToBottom();
+        }
     }, [messages]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    const handleChatSend = async (text) => {
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            { user: text },
-        ]);
-
-        try {
-            setAiLoad(true);
-            const response = await fetch(`${baseURL}/chat`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ query: text }),
-            });
-            if (!response.ok) throw new Error("Failed to fetch response");
-
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-
-            setMessages((prevMessages) => [
-                ...prevMessages,
-                { bot: "" },
-            ]);
-
-            let isFirstChunk = true;
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                const chunk = decoder.decode(value, { stream: true });
-                if (isFirstChunk) {
-                    setAiLoad(false);
-                    isFirstChunk = false;
-                }
-                setMessages((prevMessages) => {
-                    const lastMessage = prevMessages[prevMessages.length - 1];
-                    if (lastMessage.bot !== undefined) {
-                        return [
-                            ...prevMessages.slice(0, -1),
-                            { bot: lastMessage.bot + chunk },
-                        ];
-                    }
-                    return [...prevMessages, { bot: chunk }];
-                });
-            }
-        } catch (error) {
-            console.error("Failed to stream message:", error);
-            setMessages((prevMessages) => [
-                ...prevMessages,
-                { bot: "Sorry, I couldn’t process that." },
-            ]);
-            setAiLoad(false);
+    const handleScroll = () => {
+        const chatContainer = chatContainerRef.current;
+        if (chatContainer) {
+            const isUserNearBottom =
+                chatContainer.scrollHeight - chatContainer.scrollTop <=
+                chatContainer.clientHeight + 50;
+            setAutoScroll(isUserNearBottom);
         }
+    };
+
+    const handleChatSend = async (text) => {
+        setAiLoad(true);
+        setAutoScroll(true);
+        if (isAuthenticated) {
+            await privateStreamChat({
+                baseURL,
+                query: text,
+                chatId,
+                setMessages,
+                setAiLoad,
+            });
+        } else {
+            toast.info("You have only 5 free messages. Please login to continue.");
+            const success = await publicStreamChat({
+                baseURL,
+                setAiLoad,
+                setMessages,
+                query: text,
+            });
+            if (!success) {
+                toast.error("Failed to send message. Please reload the page.");
+            }
+        }
+        setAiLoad(false);
     };
 
     return (
         <div className="chat">
-            <div className="chat__messages">
-                <Container maxWidth="md" >
+            <div
+                className="chat__messages"
+                ref={chatContainerRef}
+                onScroll={handleScroll}
+            >
+                <Container className="chat__container">
                     {messages.length === 0 ? (
-                        <p style={{ color: '#D3D2D2' }}>No messages yet...</p>
+                        <p style={{ color: "#D3D2D2" }}>No messages yet...</p>
                     ) : (
                         messages.map((msg, index) => (
                             <div key={index} className="message-pair">
@@ -93,25 +95,36 @@ export default function ChatLayout({ messages, setMessages }) {
 
                     {aiLoad && <TypingIndicator message="thinking" />}
 
-                    <div className="chat__scrollToBottom">
-                        <IconButton
-                            sx={{ backgroundColor: '#36383A', '&:hover': { backgroundColor: '#2F3135' } }}
-                            onClick={scrollToBottom}
-                        >
-                            <ArrowDownward color="primary" />
-                        </IconButton>
-                    </div>
+                    {!autoScroll && (
+                        <div className="chat__scrollToBottom">
+                            <IconButton
+                                sx={{
+                                    backgroundColor: "#36383A",
+                                    "&:hover": { backgroundColor: "#2F3135" },
+                                }}
+                                onClick={() => {
+                                    scrollToBottom();
+                                    setAutoScroll(true);
+                                }}
+                            >
+                                <ArrowDownward color="primary" />
+                            </IconButton>
+                        </div>
+                    )}
                     <div ref={messagesEndRef} />
                 </Container>
             </div>
-            <Container maxWidth="md" className="chat__input">
-                <ChatInput onSend={handleChatSend} />
-            </Container>
+            <div className="chat__input">
+                <Container className="chat__container">
+                    <ChatInput onSend={handleChatSend} />
+                </Container>
+            </div>
         </div>
     );
 }
 
 ChatLayout.propTypes = {
+    chatId: PropTypes.string,
     messages: PropTypes.array.isRequired,
     setMessages: PropTypes.func.isRequired,
 };

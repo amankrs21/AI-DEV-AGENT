@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types';
 import { useState } from "react";
-import { TextField, InputAdornment, IconButton } from '@mui/material';
 import { Send } from '@mui/icons-material';
+import { TextField, InputAdornment, IconButton } from '@mui/material';
 
 
 // Chat input component
@@ -59,3 +60,7 @@ export default function ChatInput({ onSend }) {
         />
     )
 }
+
+ChatInput.propTypes = {
+    onSend: PropTypes.func.isRequired,
+};
