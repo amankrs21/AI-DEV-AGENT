@@ -6,7 +6,7 @@ import { ArrowDownward } from "@mui/icons-material";
 import { Container, IconButton } from "@mui/material";
 
 import ChatInput from "./ChatInput";
-import ChatMessage from "./ChatMessage";
+import ChatMessageBot from "./ChatMessageBot";
 import ChatMessageUser from "./ChatMessageUser";
 import TypingIndicator from "../typing/TypingIndicator";
 import { useAuth } from "../../hooks/useAuth";
@@ -92,7 +92,7 @@ export default function ChatLayout({ chatId, messages, setMessages }) {
                         messages.map((msg, index) => (
                             <div key={index} className="message-pair">
                                 {msg.user && <ChatMessageUser msg={{ user: msg.user }} />}
-                                {msg.bot && <ChatMessage msg={{ bot: msg.bot }} />}
+                                {msg.bot && <ChatMessageBot msg={{ bot: msg.bot }} />}
                             </div>
                         ))
                     )}

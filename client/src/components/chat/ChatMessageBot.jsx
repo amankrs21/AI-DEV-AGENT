@@ -1,14 +1,14 @@
-import rehypeRaw from "rehype-raw";
-import ReactMarkdown from "react-markdown";
-import { Highlight, themes } from "prism-react-renderer";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { IconButton } from "@mui/material";
 import { ContentCopy } from "@mui/icons-material";
+import { Highlight, themes } from "prism-react-renderer";
+import rehypeRaw from "rehype-raw";
+import ReactMarkdown from "react-markdown";
 
 
 // Chat message component
-const ChatMessage = ({ msg }) => {
+const ChatMessageBot = ({ msg }) => {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = (code) => {
@@ -109,4 +109,4 @@ const ChatMessage = ({ msg }) => {
     );
 };
 
-export default ChatMessage;
+export default ChatMessageBot;
