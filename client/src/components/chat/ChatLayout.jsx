@@ -7,6 +7,7 @@ import { Container, IconButton } from "@mui/material";
 
 import ChatInput from "./ChatInput";
 import ChatMessage from "./ChatMessage";
+import ChatMessageUser from "./ChatMessageUser";
 import TypingIndicator from "../typing/TypingIndicator";
 import { useAuth } from "../../hooks/useAuth";
 import { publicStreamChat } from "../../api/publicChatApi";
@@ -20,6 +21,7 @@ export default function ChatLayout({ chatId, messages, setMessages }) {
     const messagesEndRef = useRef(null);
     const chatContainerRef = useRef(null);
     const [aiLoad, setAiLoad] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [autoScroll, setAutoScroll] = useState(true);
 
     useEffect(() => {
@@ -50,6 +52,7 @@ export default function ChatLayout({ chatId, messages, setMessages }) {
 
     const handleChatSend = async (text) => {
         setAiLoad(true);
+        setIsLoading(true);
         setAutoScroll(true);
         if (isAuthenticated) {
             await privateStreamChat({
@@ -72,6 +75,7 @@ export default function ChatLayout({ chatId, messages, setMessages }) {
             }
         }
         setAiLoad(false);
+        setIsLoading(false);
     };
 
     return (
@@ -87,7 +91,7 @@ export default function ChatLayout({ chatId, messages, setMessages }) {
                     ) : (
                         messages.map((msg, index) => (
                             <div key={index} className="message-pair">
-                                {msg.user && <ChatMessage msg={{ user: msg.user }} />}
+                                {msg.user && <ChatMessageUser msg={{ user: msg.user }} />}
                                 {msg.bot && <ChatMessage msg={{ bot: msg.bot }} />}
                             </div>
                         ))
@@ -98,8 +102,11 @@ export default function ChatLayout({ chatId, messages, setMessages }) {
                     {!autoScroll && (
                         <div className="chat__scrollToBottom">
                             <IconButton
+                                size="small"
+                                aria-label="scroll to bottom"
                                 sx={{
-                                    backgroundColor: "#36383A",
+                                    backgroundColor: "#212121",
+                                    border: "1px solid #424242",
                                     "&:hover": { backgroundColor: "#2F3135" },
                                 }}
                                 onClick={() => {
@@ -116,7 +123,7 @@ export default function ChatLayout({ chatId, messages, setMessages }) {
             </div>
             <div className="chat__input">
                 <Container className="chat__container">
-                    <ChatInput onSend={handleChatSend} />
+                    <ChatInput isLoading={isLoading} onSend={handleChatSend} />
                 </Container>
             </div>
         </div>
