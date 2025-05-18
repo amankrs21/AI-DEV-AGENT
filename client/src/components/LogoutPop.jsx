@@ -13,12 +13,15 @@ export default function LogoutPop({ open, handleLogout }) {
             open={open}
             maxWidth='xs'
             onClose={() => handleLogout(false)}
+            sx={{
+                '& .MuiDialog-paper': { color: '#D3D2D2', borderRadius: '8px', backgroundColor: '#1d1e20' },
+            }}
         >
             <DialogTitle>
                 {"Confirm Logout?"}
             </DialogTitle>
             <DialogContent>
-                <DialogContentText>
+                <DialogContentText sx={{ color: '#D3D2D2' }}>
                     Are you sure you want to logout?
                 </DialogContentText>
             </DialogContent>
