@@ -46,8 +46,8 @@ def login():
             'access_token',
             value=response['access_token'],
             httponly=True,
-            secure=False,   # TODO: Set to True in production with HTTPS
-            samesite='Lax', # TODO: Set to 'Lax' in production with HTTPS
+            secure=True,   # TODO: Set to True in production with HTTPS
+            samesite="Lax", # TODO: Set to 'Lax' in production with HTTPS or 'None' for cross-site
             max_age=3600
         )
         return resp, status
