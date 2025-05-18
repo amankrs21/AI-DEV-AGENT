@@ -1,7 +1,7 @@
 * {
     scrollbar-width: thin;
     scroll-behavior: smooth;
-    scrollbar-color: #555 #1d1e20;
+    scrollbar-color: #555 transparent;
 }
 
 /* Main CSS */
@@ -210,7 +210,6 @@
     display: flex;
     overflow-y: auto;
     flex-direction: column;
-    scrollbar-color: #555 #1d1e20;
 }
 
 .chat__container {
@@ -218,9 +217,10 @@
 }
 
 .chat__scrollToBottom {
-    right: -50px;
-    bottom: 40px;
+    right: 30px;
+    bottom: 10px;
     margin: 10px;
+    z-index: 1009;
     color: #D3D2D2;
     cursor: pointer;
     position: absolute;
@@ -276,14 +276,24 @@
     background: transparent;
 }
 
-.chat-message-wrapper.user {
+.chat-message-wrapper-user {
     max-width: 80%;
-    padding: 6px 15px;
+    padding: 18px 15px;
     border-radius: 10px 10px 0 10px;
     color: #D3D2D2;
     align-self: flex-end;
     background: #2a2c2e;
     display: inline-block;
+    word-wrap: break-word;
+}
+
+.chat-message-wrapper-user pre {
+    margin: 0;
+    padding: 0;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    font-family: 'Poppins', sans-serif;
 }
 
 .chat-message-wrapper p {
